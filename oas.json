@@ -1,0 +1,253 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "GraphQL Sandbox",
+    "description": "",
+    "version": "1.0.0",
+    "contact": {
+      "name": "sandalsoft",
+      "email": "eric@sandalsoft.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://api.wolframalpha.com/",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/v2/query/": {
+      "get": {
+        "summary": "Get computational result",
+        "description": "Returns a direct computational result for a given query",
+        "operationId": "eadf7574-5cec-412c-8d10-557b62c1e0c8",
+        "parameters": [
+          {
+            "name": "appid",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "APP_ID",
+              "description": ""
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "plaintext",
+              "description": ""
+            }
+          },
+          {
+            "name": "input",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "how much wood could a woodchuck chuck",
+              "description": ""
+            }
+          },
+          {
+            "name": "output",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "JSON",
+              "description": ""
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "text/json",
+              "description": ""
+            }
+          },
+          {
+            "name": "Cookie",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "WR_SID=4df4db4.62f988faf6d24; JSESSIONID=EFBC52B6F9618F158D85D7DA2D9D32E9",
+              "description": ""
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Returns a direct computational result for a given query",
+          "content": {
+            "text/plain": {}
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "queryresult": {
+                      "type": "object",
+                      "properties": {
+                        "success": {
+                          "type": "boolean"
+                        },
+                        "error": {
+                          "type": "boolean"
+                        },
+                        "numpods": {
+                          "type": "integer",
+                          "format": "int64",
+                          "example": 2
+                        },
+                        "datatypes": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "timedout": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "timedoutpods": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "timing": {
+                          "type": "number"
+                        },
+                        "parsetiming": {
+                          "type": "number"
+                        },
+                        "parsetimedout": {
+                          "type": "boolean"
+                        },
+                        "recalculate": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "id": {
+                          "type": "string",
+                          "example": "MSP541db66a8e7d983d1500003a231b313fad47g5"
+                        },
+                        "host": {
+                          "type": "string",
+                          "example": "https://www6b3.wolframalpha.com"
+                        },
+                        "server": {
+                          "type": "string",
+                          "example": "19"
+                        },
+                        "related": {
+                          "type": "string",
+                          "example": "https://www6b3.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa551db66a8e7d983d1500002d091db128ab58gg7179915770051379692"
+                        },
+                        "version": {
+                          "type": "string",
+                          "example": "2.6"
+                        },
+                        "inputstring": {
+                          "type": "string",
+                          "example": "how much wood could a woodchuck chuck"
+                        },
+                        "pods": {
+                          "type": "object",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "assumptions": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "SubCategory"
+                            },
+                            "word": {
+                              "type": "string",
+                              "example": "how much wood could a woodchuck chuck"
+                            },
+                            "template": {
+                              "type": "string",
+                              "example": "Assuming ${desc1}. Use ${desc2} instead"
+                            },
+                            "count": {
+                              "type": "integer",
+                              "format": "int64",
+                              "example": 2
+                            },
+                            "values": {
+                              "type": "object",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "desc": {
+                                    "type": "string"
+                                  },
+                                  "input": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Date": {
+                "description": "",
+                "schema": {
+                  "type": "string",
+                  "example": "Wed, 05 Mar 2025 21:51:17 GMT"
+                }
+              },
+              "Content-Type": {
+                "description": "",
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              },
+              "Connection": {
+                "description": "",
+                "schema": {
+                  "type": "string",
+                  "example": "close"
+                }
+              },
+              "Content-Length": {
+                "description": "",
+                "schema": {
+                  "type": "string",
+                  "example": "2230"
+                }
+              },
+              "Server": {
+                "description": "",
+                "schema": {
+                  "type": "string",
+                  "example": "Apache-Coyote/1.1"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {}
+}
