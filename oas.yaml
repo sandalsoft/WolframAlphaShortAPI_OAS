@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: Wolfram Alpha Simple API
+  description: A simple API to get computational results from Wolfram Alpha
+  version: 1.0.0
+  contact:
+    name: Wolfram Alpha API Support
+    url: https://www.wolframalpha.com/contact
+
+servers:
+  - url: http://api.wolframalpha.com/v1
+    description: Production server
+
+paths:
+  /result:
+    get:
+      summary: Get computational result
+      description: Returns a direct computational result for a given query
+      operationId: getResult
+      parameters:
+        - name: appid
+          in: query
+          description: The application ID for API authentication
+          required: true
+          schema:
+            type: string
+            example: DEMO
+        - name: i
+          in: query
+          description: The input query to be computed
+          required: true
+          schema:
+            type: string
+            example: How far is Los Angeles from New York?
+        - name: units
+          in: query
+          description: The unit system for the result
+          required: false
+          schema:
+            type: string
+            enum:
+              - metric
+              - imperial
+            default: imperial
+            example: metric
+      responses:
+        '200':
+          description: Successful response with computational result
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "4166 km"
+        '400':
+          description: Invalid query or parameters
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Wolfram|Alpha did not understand your input"
+        '403':
+          description: Invalid or missing appid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid appid"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: appid
+
+security:
+  - ApiKeyAuth: []
