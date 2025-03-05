@@ -1,66 +1,517 @@
 openapi: 3.0.0
 info:
-  title: Wolfram Alpha Simple API
-  description: A simple API to get computational results from Wolfram Alpha
-  version: 1.0.0
+  title: Wolfram|Alpha Full Results API
+  description: |
+    The Wolfram|Alpha Full Results API provides a web-based API allowing the computational and presentation capabilities of Wolfram|Alpha to be integrated into web, mobile, desktop, and enterprise applications. It supports free-form queries with results returned in XML or JSON formats via HTTP GET requests.
+  version: 2.0.0
   contact:
-    name: Wolfram Alpha API Support
-    url: https://www.wolframalpha.com/contact
-
+    name: Wolfram|Alpha Developer Support
+    url: https://developer.wolframalpha.com/
+  license:
+    name: ©2025 Wolfram
 servers:
-  - url: http://api.wolframalpha.com/v1
-    description: Production server
+  - url: http://api.wolframalpha.com
+    description: Main API server
 
 paths:
-  /result:
+  /v2/query:
     get:
-      summary: Get computational result
-      description: Returns a direct computational result for a given query
-      operationId: getResult
+      summary: Submit a query to Wolfram|Alpha
+      description: |
+        Submits a free-form query to Wolfram|Alpha and returns computed results in XML or JSON format. Requires an AppID and input string, with numerous optional parameters to customize the output.
+      parameters:
+        # Basic Parameters
+        - name: appid
+          in: query
+          description: An ID provided by Wolfram Research identifying the application or organization.
+          required: true
+          schema:
+            type: string
+            example: DEMO
+        - name: input
+          in: query
+          description: URL-encoded text specifying the input string for the query.
+          required: true
+          schema:
+            type: string
+            example: population%20of%20france
+        - name: format
+          in: query
+          description: Desired format for individual result pods.
+          required: false
+          schema:
+            type: string
+            enum: [image, imagemap, plaintext, minput, moutput, cell, mathml, sound, wav]
+            default: plaintext,image
+            example: plaintext
+        - name: output
+          in: query
+          description: Desired format for the full result.
+          required: false
+          schema:
+            type: string
+            enum: [xml, json]
+            default: xml
+            example: json
+
+        # Pod Selection Parameters
+        - name: includepodid
+          in: query
+          description: Specifies a pod ID to include in the result. Multiple instances allowed.
+          required: false
+          schema:
+            type: string
+            example: Result
+        - name: excludepodid
+          in: query
+          description: Specifies a pod ID to exclude from the result. Multiple instances allowed.
+          required: false
+          schema:
+            type: string
+            example: Result
+        - name: podtitle
+          in: query
+          description: Specifies a pod title to include in the result. Supports wildcard (*). Multiple instances allowed.
+          required: false
+          schema:
+            type: string
+            example: Result
+        - name: podindex
+          in: query
+          description: Specifies the index(es) of the pod(s) to return, comma-separated.
+          required: false
+          schema:
+            type: string
+            example: 1,2,3
+        - name: scanner
+          in: query
+          description: Specifies scanner(s) to filter pods by. Multiple instances or comma-separated values allowed.
+          required: false
+          schema:
+            type: string
+            example: Data
+
+        # Location Parameters
+        - name: ip
+          in: query
+          description: Specifies a custom query location based on an IP address.
+          required: false
+          schema:
+            type: string
+            example: 192.168.1.1
+        - name: latlong
+          in: query
+          description: Specifies a custom query location based on a latitude/longitude pair.
+          required: false
+          schema:
+            type: string
+            example: 40.42,-3.71
+        - name: location
+          in: query
+          description: Specifies a custom query location based on a string.
+          required: false
+          schema:
+            type: string
+            example: Boston,%20MA
+
+        # Size Parameters
+        - name: width
+          in: query
+          description: Approximate width limit for text and tables in pixels.
+          required: false
+          schema:
+            type: integer
+            default: 500
+            example: 200
+        - name: maxwidth
+          in: query
+          description: Extended maximum width for large objects in pixels.
+          required: false
+          schema:
+            type: integer
+            default: 500
+            example: 200
+        - name: plotwidth
+          in: query
+          description: Approximate width limit for plots and graphics in pixels.
+          required: false
+          schema:
+            type: integer
+            default: 200
+            example: 100
+        - name: mag
+          in: query
+          description: Magnification of objects within a pod.
+          required: false
+          schema:
+            type: number
+            default: 1.0
+            example: 2.0
+
+        # Timeouts/Async Parameters
+        - name: scantimeout
+          in: query
+          description: Seconds to allow for the scan stage.
+          required: false
+          schema:
+            type: number
+            default: 3.0
+            example: 5.0
+        - name: podtimeout
+          in: query
+          description: Seconds to allow for formatting any one pod.
+          required: false
+          schema:
+            type: number
+            default: 4.0
+            example: 5.0
+        - name: formattimeout
+          in: query
+          description: Seconds to allow for formatting all pods.
+          required: false
+          schema:
+            type: number
+            default: 8.0
+            example: 5.0
+        - name: parsetimeout
+          in: query
+          description: Seconds to allow for the parsing stage.
+          required: false
+          schema:
+            type: number
+            default: 5.0
+            example: 5.0
+        - name: totaltimeout
+          in: query
+          description: Total seconds to allow for the query.
+          required: false
+          schema:
+            type: number
+            default: 20.0
+            example: 5.0
+        - name: async
+          in: query
+          description: Toggles asynchronous mode or sets a time limit for partial results.
+          required: false
+          schema:
+            type: string
+            enum: [true, false]
+            default: false
+            example: true
+
+        # Miscellaneous Parameters
+        - name: reinterpret
+          in: query
+          description: Allows reinterpretation of queries not initially understood.
+          required: false
+          schema:
+            type: boolean
+            default: false
+            example: true
+        - name: translation
+          in: query
+          description: Allows translation of simple queries into English.
+          required: false
+          schema:
+            type: boolean
+            default: false
+            example: true
+        - name: ignorecase
+          in: query
+          description: Forces Wolfram|Alpha to ignore case in queries.
+          required: false
+          schema:
+            type: boolean
+            default: false
+            example: true
+        - name: assumption
+          in: query
+          description: Specifies an assumption for query interpretation.
+          required: false
+          schema:
+            type: string
+            example: "*C.pi-_*Movie"
+        - name: podstate
+          in: query
+          description: Specifies a pod state change.
+          required: false
+          schema:
+            type: string
+            example: "WeatherCharts:WeatherData__Past+5+years"
+        - name: units
+          in: query
+          description: Specifies the preferred measurement system.
+          required: false
+          schema:
+            type: string
+            enum: [metric, nonmetric]
+            example: metric
+
+      responses:
+        '200':
+          description: Successful response with query results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResult'
+            application/xml:
+              schema:
+                type: string
+                example: |
+                  <queryresult success="true" error="false" numpods="5" datatypes="Country" ...>
+                    <pod title="Result" ...>
+                      <subpod><plaintext>64.1 million people...</plaintext></subpod>
+                    </pod>
+                    ...
+                  </queryresult>
+        '400':
+          description: Bad request (e.g., missing or invalid parameters)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/xml:
+              schema:
+                type: string
+                example: |
+                  <queryresult success="false" error="true" ...>
+                    <error><code>2</code><msg>Appid missing</msg></error>
+                  </queryresult>
+        '401':
+          description: Unauthorized (invalid AppID)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/xml:
+              schema:
+                type: string
+
+  /v2/validatequery:
+    get:
+      summary: Validate a query input
+      description: |
+        Performs only the parsing phase to determine if Wolfram|Alpha can understand the input, returning a lightweight result without full computation.
       parameters:
         - name: appid
           in: query
-          description: The application ID for API authentication
+          description: An ID provided by Wolfram Research identifying the application or organization.
           required: true
           schema:
             type: string
-            example: 
-        - name: i
+            example: DEMO
+        - name: input
           in: query
-          description: The input query to be computed
+          description: URL-encoded text specifying the input string to validate.
           required: true
           schema:
             type: string
-            example: How far is Los Angeles from New York?
+            example: pi
       responses:
         '200':
-          description: Successful response with computational result
+          description: Successful validation response
           content:
-            text/plain:
+            application/xml:
               schema:
-                type: string
-                example: "4166 km"
+                $ref: '#/components/schemas/ValidateQueryResult'
         '400':
-          description: Invalid query or parameters
+          description: Bad request (e.g., missing parameters)
           content:
-            text/plain:
+            application/xml:
               schema:
-                type: string
-                example: "Wolfram|Alpha did not understand your input"
-        '403':
-          description: Invalid or missing appid
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "Invalid appid"
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: query
-      name: appid
+  schemas:
+    QueryResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the query was successfully understood.
+          example: true
+        error:
+          type: boolean
+          description: Whether a serious processing error occurred.
+          example: false
+        numpods:
+          type: integer
+          description: Number of pods in the result.
+          example: 5
+        datatypes:
+          type: string
+          description: Categories and types of data represented.
+          example: Country
+        timing:
+          type: number
+          description: Wall-clock time in seconds to generate the output.
+          example: 6.272
+        pods:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pod'
+        assumptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assumption'
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+      required:
+        - success
+        - error
+        - numpods
 
-security:
-  - ApiKeyAuth: []
+    Pod:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Result
+        scanner:
+          type: string
+          example: Data
+        id:
+          type: string
+          example: Result
+        position:
+          type: number
+          example: 200
+        error:
+          type: boolean
+          example: false
+        numsubpods:
+          type: integer
+          example: 1
+        primary:
+          type: boolean
+          example: true
+        subpods:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subpod'
+      required:
+        - title
+        - scanner
+        - id
+        - position
+        - error
+        - numsubpods
+
+    Subpod:
+      type: object
+      properties:
+        title:
+          type: string
+          example: ""
+        plaintext:
+          type: string
+          example: "64.1 million people (world rank: 21st) (2014 estimate)"
+        img:
+          type: object
+          properties:
+            src:
+              type: string
+              example: http://www1.wolframalpha.com/Calculate/MSP/MSP291g37h8915724h4b800004ec2h0de24da9sbp?MSPStoreType=image/gif&s=12
+            alt:
+              type: string
+            title:
+              type: string
+            width:
+              type: integer
+            height:
+              type: integer
+
+    Assumption:
+      type: object
+      properties:
+        type:
+          type: string
+          example: Clash
+        word:
+          type: string
+          example: pi
+        template:
+          type: string
+        count:
+          type: integer
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              desc:
+                type: string
+              input:
+                type: string
+
+    Warning:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [reinterpret, spellcheck, delimiters, translation]
+        text:
+          type: string
+
+    Source:
+      type: object
+      properties:
+        url:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: boolean
+          example: true
+        numpods:
+          type: integer
+          example: 0
+        errorDetails:
+          type: object
+          properties:
+            code:
+              type: integer
+            msg:
+              type: string
+      required:
+        - success
+        - error
+
+    ValidateQueryResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        error:
+          type: boolean
+          example: false
+        timing:
+          type: number
+          example: 3.556
+        parsetiming:
+          type: number
+          example: 3.54
+        version:
+          type: string
+          example: 2.6
+        assumptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assumption'
+      required:
+        - success
+        - error
