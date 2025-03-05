@@ -8,7 +8,7 @@ info:
     url: https://www.wolframalpha.com/contact
 
 servers:
-  - url: http://api.wolframalpha.com
+  - url: http://api.wolframalpha.com/v1
     description: Production server
 
 paths:
